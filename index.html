@@ -4,24 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NM Agency</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <script>
       tailwind.config = {
-        theme: { 
-          extend: { 
-            colors: { 
-              brand: '#D4AF37', // Guld-gul
-              'brand-dark': '#B8860B' 
-            } 
-          } 
+        theme: {
+          extend: {
+            colors: {
+              brand: '#ff3e00',
+              'brand-light': '#ff6233',
+              'brand-dark': '#cc3200',
+            },
+            fontFamily: { sans: ['Inter', 'sans-serif'] }
+          }
         }
       }
     </script>
+
     <style>
-        body { background-color: #050505; color: white; margin: 0; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(212, 175, 55, 0.1); }
-        iframe { pointer-events: none; position: fixed; inset: 0; z-index: -1; opacity: 0.6; }
-        .gold-gradient { background: linear-gradient(to right, #D4AF37, #F5DEB3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body { background-color: #09090b; color: white; margin: 0; overflow-x: hidden; }
+        .glass { background: rgba(9, 9, 11, 0.7); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .btn-primary { 
+            @apply px-8 py-4 rounded-full bg-[#ff3e00] text-white font-bold flex items-center justify-center gap-2 hover:bg-[#cc3200] transition-all active:scale-95 text-lg;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #09090b; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
     </style>
 </head>
 <body>
@@ -29,109 +41,184 @@
 
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script type="importmap">
+    {
+      "imports": {
+        "framer-motion": "https://esm.sh/framer-motion@11.0.0",
+        "lucide-react": "https://esm.sh/lucide-react@0.344.0"
+      }
+    }
+    </script>
 
-    <script type="text/babel">
+    <script type="text/babel" data-type="module">
+        import { motion, AnimatePresence } from 'framer-motion';
+        import { 
+          ArrowRight, BarChart3, Camera, CheckCircle2, Globe, Instagram, Mail, 
+          Menu, MessageSquare, Rocket, Smartphone, Target, X, Facebook, 
+          ChevronRight, ChevronDown 
+        } from 'lucide-react';
+
         const { useState, useEffect } = React;
 
-        const Icon = ({ name, className = "w-6 h-6" }) => {
-            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, []);
-            return <i data-lucide={name} className={className}></i>;
-        };
+        const Logo = ({ className = "w-6 h-6" }) => (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0a2 2 0 0 1 2 2v1H2v-1a2 2 0 0 1 2-2" />
+            <path d="M7 17h10" /><path d="M6 13l4-4 4 3 6-6" />
+            <circle cx="6" cy="13" r="1" fill="currentColor" /><circle cx="10" cy="9" r="1" fill="currentColor" /><circle cx="14" cy="12" r="1" fill="currentColor" />
+            <path d="M17 3h3v3" />
+          </svg>
+        );
 
-        const App = () => {
-            const [isScrolled, setIsScrolled] = useState(false);
-            useEffect(() => {
-                const h = () => setIsScrolled(window.scrollY > 20);
-                window.addEventListener('scroll', h);
-                return () => window.removeEventListener('scroll', h);
-            }, []);
+        const Navbar = () => {
+          const [isScrolled, setIsScrolled] = useState(false);
+          const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+          useEffect(() => {
+            const h = () => setIsScrolled(window.scrollY > 20);
+            window.addEventListener('scroll', h);
+            return () => window.removeEventListener('scroll', h);
+          }, []);
 
-            return (
-                <div className="min-h-screen">
-                    <iframe src="https://my.spline.design/interfaceii-ySSoYt7OwRMe2FmJroVGNTJQ/" frameBorder="0" width="100%" height="100%"></iframe>
-                    
-                    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all ${isScrolled ? 'glass py-4' : 'py-8'}`}>
-                        <div className="max-w-7xl mx-auto px-10 flex justify-between items-center">
-                            <div className="flex items-center gap-3">
-                                <div className="h-10 w-[2px] bg-brand"></div>
-                                <span className="text-2xl font-light tracking-[0.2em] uppercase">NM <span className="font-bold text-brand">Agency</span></span>
-                            </div>
-                            <div className="hidden md:flex gap-12 items-center uppercase tracking-widest text-[10px] font-bold">
-                                <a href="#tjanster" className="hover:text-brand transition-colors">Tjänster</a>
-                                <a href="#kontakt" className="border border-brand/50 px-6 py-2 rounded-sm hover:bg-brand hover:text-black transition-all">Boka möte</a>
-                            </div>
-                        </div>
-                    </nav>
+          const navLinks = [
+            { name: 'Tjänster', href: '#tjanster' },
+            { name: 'Om oss', href: '#om' },
+            { name: 'Kontakt', href: '#kontakt' },
+          ];
 
-                    <main>
-                        {/* HERO - Vänsterställd layout */}
-                        <section className="pt-64 pb-32 px-10 max-w-7xl mx-auto flex flex-col items-start text-left">
-                            <h1 className="text-7xl md:text-9xl font-black mb-8 leading-[0.9] tracking-tighter">
-                                VI BYGGER <br />
-                                <span className="gold-gradient italic">FRAMTIDENS</span> <br />
-                                VARUMÄRKEN.
-                            </h1>
-                            <div className="w-24 h-[1px] bg-brand mb-8"></div>
-                            <p className="text-xl text-zinc-400 mb-12 max-w-xl leading-relaxed">
-                                NM Agency hjälper ambitiösa företag att dominera sin nisch genom datadriven strategi och exklusiv design.
-                            </p>
-                            <a href="#kontakt" className="group flex items-center gap-4 text-brand font-bold uppercase tracking-widest text-sm">
-                                Starta projektet <Icon name="arrow-right" className="group-hover:translate-x-2 transition-transform" />
-                            </a>
-                        </section>
-
-                        {/* TJÄNSTER */}
-                        <section id="tjanster" className="py-40 px-10 max-w-7xl mx-auto border-t border-zinc-900">
-                            <div className="flex flex-col md:flex-row justify-between items-start gap-20">
-                                <div className="md:w-1/3">
-                                    <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-brand mb-4">Vår expertis</h2>
-                                    <h3 className="text-4xl font-bold leading-tight">Tjänster anpassade för tillväxt.</h3>
-                                </div>
-                                <div className="md:w-2/3 grid sm:grid-cols-2 gap-10">
-                                    <div className="space-y-4">
-                                        <Icon name="facebook" className="text-brand w-10 h-10" />
-                                        <h4 className="text-xl font-bold">Facebook Ads</h4>
-                                        <p className="text-zinc-500 text-sm leading-relaxed">Högpresterande kampanjer med fokus på ROAS och skalbarhet.</p>
-                                    </div>
-                                    <div className="space-y-4">
-                                        <Icon name="instagram" className="text-brand w-10 h-10" />
-                                        <h4 className="text-xl font-bold">Instagram Growth</h4>
-                                        <p className="text-zinc-500 text-sm leading-relaxed">Visuell auktoritet som förvandlar uppmärksamhet till affärsvärde.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        {/* KONTAKT */}
-                        <section id="kontakt" className="py-40 px-10 bg-zinc-950/80 border-y border-zinc-900">
-                            <div className="max-w-7xl mx-auto flex flex-col items-start">
-                                <h2 className="text-7xl md:text-8xl font-bold mb-16 tracking-tighter">REDO ATT <br /><span className="text-brand">VÄXA?</span></h2>
-                                <div className="grid md:grid-cols-2 gap-10 w-full text-zinc-400 uppercase tracking-widest text-xs">
-                                    <div className="p-8 border border-zinc-800 hover:border-brand/30 transition-colors">
-                                        <p className="mb-2">E-post</p>
-                                        <p className="text-xl font-bold text-white lowercase">agencymarketingnm@gmail.com</p>
-                                    </div>
-                                    <div className="p-8 border border-zinc-800 hover:border-brand/30 transition-colors">
-                                        <p className="mb-2">Telefon</p>
-                                        <p className="text-xl font-bold text-white">076 318 81 10</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                    </main>
-
-                    <footer className="py-10 px-10 flex justify-between items-center text-[10px] uppercase tracking-[0.2em] text-zinc-600">
-                        <span>© 2026 NM Agency</span>
-                        <span>Stockholm, Sverige</span>
-                    </footer>
+          return (
+            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass py-4' : 'bg-transparent py-6'}`}>
+              <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Logo className="text-brand w-8 h-8" />
+                  <span className="text-xl font-bold tracking-tight">NM <span className="text-brand">Agency</span></span>
                 </div>
-            );
+                <div className="hidden md:flex items-center gap-8 text-white">
+                  {navLinks.map((link) => (
+                    <a key={link.name} href={link.href} className="text-sm font-medium hover:text-brand transition-colors">{link.name}</a>
+                  ))}
+                  <a href="#kontakt" className="text-sm font-bold hover:text-brand transition-all">Boka möte</a>
+                </div>
+                <button className="md:hidden text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                  {isMobileMenuOpen ? <X /> : <Menu />}
+                </button>
+              </div>
+              <AnimatePresence>
+                {isMobileMenuOpen && (
+                  <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="absolute top-full left-0 right-0 bg-zinc-900 border-t border-zinc-800 p-6 shadow-xl md:hidden">
+                    <div className="flex flex-col gap-4">
+                      {navLinks.map((link) => (
+                        <a key={link.name} href={link.href} className="text-lg font-medium text-white" onClick={() => setIsMobileMenuOpen(false)}>{link.name}</a>
+                      ))}
+                      <a href="#kontakt" className="text-lg font-bold text-brand" onClick={() => setIsMobileMenuOpen(false)}>Boka möte</a>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </nav>
+          );
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        const SplineBackground = () => (
+          <div className="fixed inset-0 z-[-1] overflow-hidden bg-zinc-950">
+            <iframe src="https://my.spline.design/interfaceii-ySSoYt7OwRMe2FmJroVGNTJQ/" frameBorder="0" width="100%" height="100%" className="absolute w-[calc(100%+150px)] h-[calc(100%+150px)] -bottom-[75px] -right-[75px] pointer-events-none object-cover" />
+            <div className="absolute inset-0 bg-zinc-950/40 pointer-events-none" />
+          </div>
+        );
+
+        const Hero = () => (
+          <section className="relative pt-32 pb-20">
+            <div className="max-w-7xl mx-auto px-6 text-center">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+                <h1 className="text-6xl md:text-9xl font-bold leading-[1] mb-8 tracking-tight text-white">
+                  Vi bygger <span className="text-brand italic">framtidens</span> varumärken.
+                </h1>
+                <p className="text-xl text-zinc-300 mb-10 max-w-2xl mx-auto">
+                  NM Agency hjälper ambitiösa företag att dominera sin nisch genom datadriven strategi och kreativt innehåll.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <a href="#kontakt" className="btn-primary group">
+                    Starta ditt projekt <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </a>
+                  <a href="#tjanster" className="px-8 py-4 rounded-full text-lg font-medium border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all text-white">
+                    Våra tjänster
+                  </a>
+                </div>
+              </motion.div>
+            </div>
+          </section>
+        );
+
+        const Services = () => {
+          const srv = [
+            { icon: <Facebook />, title: "Facebook Annonsering", desc: "Vi skapar och optimerar högkonverterande annonskampanjer på Facebook för att driva försäljning och leads." },
+            { icon: <Instagram />, title: "Instagram Annonsering", desc: "Vi bygger visuellt tilltalande kampanjer på Instagram som fångar din målgrupps uppmärksamhet och bygger varumärke." }
+          ];
+          return (
+            <section id="tjanster" className="py-32 px-6 max-w-7xl mx-auto">
+              <h2 className="text-5xl font-bold mb-16 text-brand text-center md:text-left">Våra Tjänster</h2>
+              <div className="grid md:grid-cols-2 gap-8">
+                {srv.map((s, i) => (
+                  <motion.div key={i} whileHover={{ y: -10 }} className="bg-zinc-900/40 backdrop-blur-md p-10 rounded-[2.5rem] border border-white/5 hover:shadow-xl hover:shadow-brand/5 transition-all">
+                    <div className="w-16 h-16 bg-brand/10 text-brand rounded-2xl flex items-center justify-center mb-8">{s.icon}</div>
+                    <h3 className="text-2xl font-bold mb-4">{s.title}</h3>
+                    <p className="text-zinc-400 leading-relaxed">{s.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+          );
+        };
+
+        const Contact = () => {
+          const [formData, setFormData] = useState({ name: '', email: '', service: 'Facebook Annonsering', message: '' });
+          const [status, setStatus] = useState({ type: null, message: '' });
+          
+          const handleSubmit = (e) => {
+            e.preventDefault();
+            setStatus({ type: 'loading', message: 'Skickar...' });
+            setTimeout(() => setStatus({ type: 'success', message: 'Tack! Vi hörs snart.' }), 1500);
+          };
+
+          return (
+            <section id="kontakt" className="py-32 px-6 max-w-7xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-20">
+                <div>
+                  <h2 className="text-6xl font-bold mb-8 text-brand">Redo att ta <span className="italic">nästa steg?</span></h2>
+                  <div className="space-y-8">
+                    <div className="flex items-center gap-6"><Mail className="text-brand w-8 h-8"/> <span className="text-2xl font-bold">agencymarketingnm@gmail.com</span></div>
+                    <div className="flex items-center gap-6"><Smartphone className="text-brand w-8 h-8"/> <span className="text-2xl font-bold">076 318 81 10</span></div>
+                  </div>
+                </div>
+                <div className="bg-zinc-900/40 p-12 rounded-[3rem] border border-white/5">
+                  <form className="space-y-8" onSubmit={handleSubmit}>
+                    <input className="w-full bg-transparent border-b border-white/20 py-4 focus:border-brand outline-none" placeholder="Namn" required onChange={e => setFormData({...formData, name: e.target.value})} />
+                    <input className="w-full bg-transparent border-b border-white/20 py-4 focus:border-brand outline-none" placeholder="E-post" type="email" required onChange={e => setFormData({...formData, email: e.target.value})} />
+                    <textarea className="w-full bg-transparent border-b border-white/20 py-4 focus:border-brand outline-none resize-none" placeholder="Meddelande" rows="3" required onChange={e => setFormData({...formData, message: e.target.value})} />
+                    <button className="w-full text-brand font-bold text-xl py-4 hover:text-brand-light transition-all">{status.type === 'loading' ? 'Skickar...' : (status.message || 'Skicka meddelande')}</button>
+                  </form>
+                </div>
+              </div>
+            </section>
+          );
+        };
+
+        const App = () => (
+          <div className="min-h-screen">
+            <SplineBackground />
+            <Navbar />
+            <main>
+              <Hero />
+              <Services />
+              <Contact />
+            </main>
+            <footer className="py-12 border-t border-zinc-900 text-center text-zinc-500 text-sm">
+              © 2026 NM Agency AB. Alla rättigheter förbehållna.
+            </footer>
+          </div>
+        );
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     </script>
 </body>
 </html>
