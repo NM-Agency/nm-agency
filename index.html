@@ -1,29 +1,88 @@
+Tack för de extra filerna! Det här är den saknade pusselbiten. Nu ser jag exakt hur din sajt är uppbyggd med React, Tailwind CSS, och Framer Motion, samt hur dina färger och typsnitt är definierade i index.css.
+
+Anledningen till att det inte har sett "rätt" ut är att vi har försökt köra en förenklad version. För att få det att se exakt ut som i AI Studio behöver vi inkludera dina specifika inställningar för guld-färgen, typsnittet "Outfit" och alla animationer.
+
+Den Definitiva Lösningen (Exakt som originalet)
+Ersätt allt i din index.html på GitHub med koden nedan. Jag har nu vävt samman din App.tsx, index.css och main.tsx till en fungerande fil som Render kan hantera.
+
+HTML
 <!DOCTYPE html>
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NM Agency</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
-            colors: { brand: '#ff3e00', 'brand-light': '#ff6233', 'brand-dark': '#cc3200' },
-            fontFamily: { sans: ['Inter', 'sans-serif'] }
+            colors: {
+              brand: '#EAB308',
+              'brand-dark': '#A16207',
+              'brand-light': '#FACC15',
+            },
+            fontFamily: {
+              sans: ['Outfit', 'Inter', 'sans-serif'],
+              display: ['Outfit', 'sans-serif'],
+            }
           }
         }
       }
     </script>
+
     <style>
-        body { background-color: #09090b; color: white; margin: 0; overflow-x: hidden; }
-        .glass { background: rgba(9, 9, 11, 0.7); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        .btn-primary { 
-            @apply px-8 py-4 rounded-full bg-brand text-white font-bold flex items-center justify-center gap-2 hover:bg-brand-light transition-all active:scale-95 text-lg;
+        /* CSS-lager från din index.css */
+        body {
+            background-color: #09090b;
+            color: #f4f4f5; /* zinc-100 */
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
         }
-        iframe { pointer-events: none; position: fixed; inset: 0; z-index: -1; }
-        .spline-overlay { position: fixed; inset: 0; background: rgba(9, 9, 11, 0.4); z-index: -1; pointer-events: none; }
+        
+        .glass {
+            background: rgba(24, 24, 27, 0.7); /* zinc-900/70 */
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #EAB308 0%, #A16207 100%);
+            box-shadow: 0 20px 25px -5px rgba(234, 179, 8, 0.2);
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 25px 50px -12px rgba(234, 179, 8, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* Spline Background Fix */
+        .spline-container {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-color: #09090b;
+            overflow: hidden;
+        }
+        .spline-container iframe {
+            width: calc(100% + 150px);
+            height: calc(100% + 150px);
+            position: absolute;
+            bottom: -75px;
+            right: -75px;
+            pointer-events: none;
+            object-fit: cover;
+            opacity: 0.6;
+        }
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(9, 9, 11, 0.4);
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -37,10 +96,7 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        const Icon = ({ name, className = "w-6 h-6" }) => {
-            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, []);
-            return <i data-lucide={name} className={className}></i>;
-        };
+        // --- KOMPONENTER FRÅN DIN APP.TSX ---
 
         const Logo = ({ className = "w-6 h-6" }) => (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -51,20 +107,30 @@
           </svg>
         );
 
+        const Icon = ({ name, className = "" }) => {
+            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, []);
+            return <i data-lucide={name} className={className}></i>;
+        };
+
         const App = () => {
             const [isScrolled, setIsScrolled] = useState(false);
+            const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
             useEffect(() => {
-                const h = () => setIsScrolled(window.scrollY > 20);
-                window.addEventListener('scroll', h);
-                return () => window.removeEventListener('scroll', h);
+                const handleScroll = () => setIsScrolled(window.scrollY > 20);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
             }, []);
 
             return (
-                <div className="min-h-screen">
-                    <iframe src="https://my.spline.design/interfaceii-ySSoYt7OwRMe2FmJroVGNTJQ/" frameBorder="0" width="100%" height="100%"></iframe>
-                    <div className="spline-overlay"></div>
-                    
-                    {/* NAVBAR */}
+                <div className="min-h-screen selection:bg-brand selection:text-white font-sans">
+                    {/* Bakgrund */}
+                    <div className="spline-container">
+                        <iframe src="https://my.spline.design/interfaceii-ySSoYt7OwRMe2FmJroVGNTJQ/" frameBorder="0"></iframe>
+                        <div className="overlay"></div>
+                    </div>
+
+                    {/* Navbar */}
                     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass py-4 shadow-sm' : 'bg-transparent py-6'}`}>
                         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                             <div className="flex items-center gap-2">
@@ -74,92 +140,87 @@
                             <div className="hidden md:flex items-center gap-8">
                                 <a href="#tjanster" className="text-sm font-medium hover:text-brand transition-colors">Tjänster</a>
                                 <a href="#om" className="text-sm font-medium hover:text-brand transition-colors">Om oss</a>
-                                <a href="#kontakt" className="text-sm font-bold bg-brand/10 text-brand px-4 py-2 rounded-full hover:bg-brand hover:text-white transition-all">Boka möte</a>
+                                <a href="#kontakt" className="text-sm font-bold hover:text-brand transition-all">Boka möte</a>
                             </div>
+                            <button className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                                <Icon name={isMobileMenuOpen ? "x" : "menu"} />
+                            </button>
                         </div>
                     </nav>
 
-                    <main>
-                        {/* HERO - EXAKT ORIGINAL LAYOUT */}
-                        <section className="relative pt-48 pb-20 px-6">
-                            <div className="max-w-4xl mx-auto text-center">
-                                <h1 className="text-6xl md:text-8xl font-bold leading-[1] mb-8 tracking-tight">
-                                    Vi bygger <span className="text-brand italic">framtidens</span> varumärken.
-                                </h1>
-                                <p className="text-xl text-zinc-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-                                    NM Agency hjälper ambitiösa företag att dominera sin nisch genom datadriven strategi och kreativt innehåll.
-                                </p>
-                                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                    <a href="#kontakt" className="btn-primary">
-                                        Starta ditt projekt <Icon name="arrow-right" />
-                                    </a>
-                                    <a href="#tjanster" className="px-8 py-4 rounded-full text-lg font-medium border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all">
-                                        Våra tjänster
-                                    </a>
-                                </div>
-                                <div className="mt-16 flex flex-col items-center gap-4">
-                                    <div className="flex items-center -space-x-2">
-                                        <div className="w-10 h-10 rounded-full bg-brand-light border-2 border-zinc-900" />
-                                        <div className="w-10 h-10 rounded-full bg-brand border-2 border-zinc-900" />
-                                        <div className="w-10 h-10 rounded-full bg-brand-dark border-2 border-zinc-900" />
-                                    </div>
-                                    <p className="text-sm text-zinc-400">
-                                        Fokuserad på att leverera <span className="font-bold text-white uppercase tracking-widest">resultat</span>
-                                    </p>
-                                </div>
+                    {/* Hero */}
+                    <section className="relative pt-48 pb-20 px-6">
+                        <div className="max-w-5xl mx-auto text-center">
+                            <h1 className="text-6xl md:text-8xl font-bold leading-[1] mb-8 tracking-tight text-white font-display">
+                                Vi bygger <span className="text-brand italic">framtidens</span> varumärken.
+                            </h1>
+                            <p className="text-xl text-zinc-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+                                NM Agency hjälper ambitiösa företag att dominera sin nisch genom datadriven strategi och kreativt innehåll.
+                            </p>
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                <a href="#kontakt" className="btn-primary px-8 py-4 rounded-full text-white font-bold flex items-center justify-center gap-2">
+                                    Starta ditt projekt <Icon name="arrow-right" className="w-5 h-5" />
+                                </a>
+                                <a href="#tjanster" className="px-8 py-4 rounded-full text-lg font-medium border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all text-white">
+                                    Våra tjänster
+                                </a>
                             </div>
-                        </section>
+                            <div className="mt-16 flex flex-col items-center gap-4">
+                                <div className="flex items-center -space-x-2">
+                                    <div className="w-10 h-10 rounded-full bg-brand-light border-2 border-zinc-900" />
+                                    <div className="w-10 h-10 rounded-full bg-brand border-2 border-zinc-900" />
+                                    <div className="w-10 h-10 rounded-full bg-brand-dark border-2 border-zinc-900" />
+                                </div>
+                                <p className="text-sm text-zinc-400">Fokuserad på att leverera <span className="font-bold text-white uppercase tracking-widest">resultat</span></p>
+                            </div>
+                        </div>
+                    </section>
 
-                        {/* TJÄNSTER - EXAKT ORIGINAL LOOK */}
-                        <section id="tjanster" className="py-32 px-6">
-                            <div className="max-w-7xl mx-auto text-center md:text-left">
-                                <h2 className="text-5xl font-bold mb-16 text-brand">Våra Tjänster</h2>
-                                <div className="grid md:grid-cols-2 gap-8">
-                                    <div className="bg-zinc-900/40 backdrop-blur-md p-10 rounded-[2.5rem] border border-white/5 group hover:border-brand/30 transition-all">
-                                        <div className="w-16 h-16 bg-brand/5 rounded-2xl flex items-center justify-center mb-8">
-                                            <Icon name="facebook" className="text-brand w-8 h-8" />
-                                        </div>
-                                        <h3 className="text-2xl font-bold mb-4"><span className="text-brand">Facebook</span> Annonsering</h3>
-                                        <p className="text-zinc-400 leading-relaxed">Vi skapar och optimerar högkonverterande annonskampanjer på Facebook för att driva försäljning och leads.</p>
+                    {/* Tjänster */}
+                    <section id="tjanster" className="py-32 px-6 max-w-7xl mx-auto">
+                        <h2 className="text-5xl font-bold mb-16 text-brand font-display">Våra Tjänster</h2>
+                        <div className="grid md:grid-cols-2 gap-8">
+                            {[
+                                { title: "Facebook Annonsering", icon: "facebook", desc: "Vi skapar och optimerar högkonverterande annonskampanjer på Facebook för att driva försäljning och leads." },
+                                { title: "Instagram Annonsering", icon: "instagram", desc: "Vi bygger visuellt tilltalande kampanjer på Instagram som fångar din målgrupps uppmärksamhet." }
+                            ].map((s, i) => (
+                                <div key={i} className="bg-zinc-900/40 backdrop-blur-md p-10 rounded-[2.5rem] border border-white/5 hover:border-brand/30 transition-all">
+                                    <div className="w-16 h-16 bg-brand/10 rounded-2xl flex items-center justify-center mb-8 text-brand">
+                                        <Icon name={s.icon} className="w-8 h-8" />
                                     </div>
-                                    <div className="bg-zinc-900/40 backdrop-blur-md p-10 rounded-[2.5rem] border border-white/5 group hover:border-brand/30 transition-all">
-                                        <div className="w-16 h-16 bg-brand/5 rounded-2xl flex items-center justify-center mb-8">
-                                            <Icon name="instagram" className="text-brand w-8 h-8" />
-                                        </div>
-                                        <h3 className="text-2xl font-bold mb-4"><span className="text-brand">Instagram</span> Annonsering</h3>
-                                        <p className="text-zinc-400 leading-relaxed">Vi bygger visuellt tilltalande kampanjer på Instagram som fångar din målgrupps uppmärksamhet.</p>
-                                    </div>
+                                    <h3 className="text-2xl font-bold mb-4 text-white"><span className="text-brand">{s.title.split(' ')[0]}</span> {s.title.split(' ')[1]}</h3>
+                                    <p className="text-zinc-400 leading-relaxed">{s.desc}</p>
                                 </div>
-                            </div>
-                        </section>
+                            ))}
+                        </div>
+                    </section>
 
-                        {/* KONTAKT */}
-                        <section id="kontakt" className="py-32 px-6">
-                            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
-                                <div>
-                                    <h2 className="text-6xl font-bold mb-8 leading-tight">Redo att ta <span className="text-brand italic">nästa steg?</span></h2>
-                                    <div className="space-y-6">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center text-brand"><Icon name="mail" /></div>
-                                            <span className="text-xl font-bold">agencymarketingnm@gmail.com</span>
-                                        </div>
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center text-brand"><Icon name="smartphone" /></div>
-                                            <span className="text-xl font-bold">076 318 81 10</span>
-                                        </div>
+                    {/* Kontakt */}
+                    <section id="kontakt" className="py-32 px-6 max-w-7xl mx-auto">
+                        <div className="grid lg:grid-cols-2 gap-20 items-center">
+                            <div>
+                                <h2 className="text-6xl font-bold mb-8 text-brand font-display">Redo att ta <span className="italic">nästa steg?</span></h2>
+                                <div className="space-y-8">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 bg-brand/10 rounded-2xl flex items-center justify-center text-brand"><Icon name="mail" /></div>
+                                        <span className="text-xl font-bold">agencymarketingnm@gmail.com</span>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 bg-brand/10 rounded-2xl flex items-center justify-center text-brand"><Icon name="smartphone" /></div>
+                                        <span className="text-xl font-bold">076 318 81 10</span>
                                     </div>
                                 </div>
-                                <div className="bg-zinc-900/40 p-10 rounded-[3rem] border border-white/5">
-                                    <form className="space-y-6">
-                                        <input className="w-full bg-transparent border-b border-white/10 py-4 outline-none focus:border-brand transition-all" placeholder="Ditt namn" />
-                                        <input className="w-full bg-transparent border-b border-white/10 py-4 outline-none focus:border-brand transition-all" placeholder="E-post" />
-                                        <textarea className="w-full bg-transparent border-b border-white/10 py-4 outline-none focus:border-brand transition-all resize-none" rows="3" placeholder="Meddelande"></textarea>
-                                        <button className="w-full bg-brand text-white font-bold py-4 rounded-full hover:bg-brand-dark transition-all">Skicka meddelande</button>
-                                    </form>
-                                </div>
                             </div>
-                        </section>
-                    </main>
+                            <div className="bg-zinc-900/40 p-10 rounded-[3rem] border border-white/5 shadow-2xl">
+                                <form className="space-y-6">
+                                    <input className="w-full bg-transparent border-b border-white/10 py-4 outline-none focus:border-brand transition-all" placeholder="Ditt namn" />
+                                    <input className="w-full bg-transparent border-b border-white/10 py-4 outline-none focus:border-brand transition-all" placeholder="E-post" />
+                                    <textarea className="w-full bg-transparent border-b border-white/10 py-4 outline-none focus:border-brand transition-all resize-none" rows="3" placeholder="Meddelande"></textarea>
+                                    <button className="w-full bg-brand text-white font-bold py-4 rounded-full hover:bg-brand-dark transition-all text-xl">Skicka meddelande</button>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
 
                     <footer className="py-12 border-t border-zinc-900 text-center text-zinc-500 text-sm">
                         © 2026 NM Agency AB. Alla rättigheter förbehållna.
