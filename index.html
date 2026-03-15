@@ -3,42 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NM Agency - Test</title>
+    <title>NM Agency</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: { extend: { colors: { brand: '#ff3e00' } } }
+      }
+    </script>
     <style>
-        body { background-color: #09090b; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
-        .brand-text { color: #ff3e00; font-style: italic; }
+        body { background-color: #09090b; color: white; margin: 0; font-family: sans-serif; scroll-behavior: smooth; }
+        .glass { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .hero-gradient { background: radial-gradient(circle at center, rgba(255, 62, 0, 0.1) 0%, transparent 70%); }
     </style>
 </head>
 <body>
-    <div id="root" class="text-center">
-        <h1 class="text-5xl md:text-7xl font-bold">
-            Vi bygger <span class="brand-text">framtidens</span> varumärken.
-        </h1>
-        <p class="text-zinc-400 mt-6 text-xl">NM Agency - Sidan laddas...</p>
-        <div id="debug-info" class="mt-10 text-xs text-zinc-600">Väntar på React...</div>
-    </div>
+    <div id="root"></div>
 
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <script type="text/babel">
-        function App() {
+        const { useState, useEffect } = React;
+
+        const Navbar = () => {
+            const [isScrolled, setIsScrolled] = useState(false);
+            useEffect(() => {
+                const handleScroll = () => setIsScrolled(window.scrollY > 20);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
             return (
-                <div className="p-6">
-                    <h1 className="text-5xl md:text-7xl font-bold">
-                        Vi bygger <span className="text-[#ff3e00] italic">framtidens</span> varumärken.
-                    </h1>
-                    <p className="text-zinc-400 mt-6 text-xl">Kopplingen till React fungerar!</p>
-                    <a href="mailto:agencymarketingnm@gmail.com" className="mt-8 inline-block bg-[#ff3e00] px-8 py-3 rounded-full font-bold">Kontakta oss</a>
+                <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass py-4' : 'bg-transparent py-6'}`}>
+                    <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 bg-brand rounded-lg flex items-center justify-center font-bold">NM</div>
+                            <span className="text-xl font-bold tracking-tight">NM <span className="text-brand">Agency</span></span>
+                        </div>
+                        <div className="hidden md:flex items-center gap-8">
+                            <a href="#tjanster" className="text-sm hover:text-brand transition-colors">Tjänster</a>
+                            <a href="#om" className="text-sm hover:text-brand transition-colors">Om oss</a>
+                            <a href="#kontakt" className="bg-brand px-6 py-2 rounded-full text-sm font-bold hover:scale-105 transition-all">Boka möte</a>
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
+        const App = () => {
+            return (
+                <div className="min-h-screen relative overflow-hidden">
+                    <div className="absolute inset-0 hero-gradient pointer-events-none"></div>
+                    <Navbar />
+                    
+                    {/* HERO */}
+                    <section className="relative pt-48 pb-32 px-6 text-center">
+                        <div className="max-w-5xl mx-auto">
+                            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight">
+                                Vi bygger <span className="text-brand italic">framtidens</span> varumärken.
+                            </h1>
+                            <p className="text-xl text-zinc-400 mb-10 max-w-2xl mx-auto">
+                                NM Agency hjälper ambitiösa företag att dominera sin nisch genom datadriven strategi och kreativt innehåll.
+                            </p>
+                            <a href="#kontakt" className="inline-flex items-center bg-brand text-white px-10 py-4 rounded-full font-bold text-lg hover:scale-105 transition-all">
+                                Starta ditt projekt
+                            </a>
+                        </div>
+                    </section>
+
+                    {/* TJÄNSTER */}
+                    <section id="tjanster" className="py-32 px-6 bg-zinc-900/30">
+                        <div className="max-w-7xl mx-auto">
+                            <h2 className="text-4xl font-bold text-center mb-16 italic text-brand">Våra Tjänster</h2>
+                            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                                <div className="p-10 bg-zinc-900 border border-white/5 rounded-[2rem] hover:border-brand/50 transition-all">
+                                    <h3 className="text-2xl font-bold mb-4">Facebook Annonsering</h3>
+                                    <p className="text-zinc-400">Vi optimerar dina kampanjer för maximal avkastning och tillväxt.</p>
+                                </div>
+                                <div className="p-10 bg-zinc-900 border border-white/5 rounded-[2rem] hover:border-brand/50 transition-all">
+                                    <h3 className="text-2xl font-bold mb-4">Instagram Annonsering</h3>
+                                    <p className="text-zinc-400">Visuell storytelling som förvandlar följare till lojala kunder.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* KONTAKT */}
+                    <section id="kontakt" className="py-32 px-6 text-center">
+                        <h2 className="text-5xl font-bold mb-8 text-brand">Redo att växa?</h2>
+                        <p className="text-xl text-zinc-400 mb-12">Hör av dig så bokar vi ett möte.</p>
+                        <div className="space-y-4 font-bold text-2xl">
+                            <div className="text-brand">agencymarketingnm@gmail.com</div>
+                            <div className="text-white">076 318 81 10</div>
+                        </div>
+                    </section>
+
+                    <footer className="py-12 border-t border-white/5 text-center text-zinc-600 text-sm">
+                        © 2026 NM Agency AB. Alla rättigheter förbehållna.
+                    </footer>
                 </div>
             );
-        }
+        };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
-        document.getElementById('debug-info').innerText = "React har startat!";
     </script>
 </body>
 </html>
