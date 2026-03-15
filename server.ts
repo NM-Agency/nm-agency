@@ -1,5 +1,4 @@
 import express from "express";
-import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
 import nodemailer from "nodemailer";
@@ -12,11 +11,12 @@ const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
+  // Render sätter automatiskt PORT, annars används 3000 lokalt
   const PORT = process.env.PORT || 3000;
 
   app.use(express.json());
 
-  // API route for contact form
+  // API route för kontaktformuläret
   app.post("/api/contact", async (req, res) => {
     const { name, email, service, message } = req.body;
 
@@ -24,7 +24,7 @@ async function startServer() {
       return res.status(400).json({ error: "Alla fält är obligatoriska." });
     }
 
-    // Configure transporter
+    // Konfigurera e-post (Transporter)
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -32,7 +32,6 @@ async function startServer() {
         pass: process.env.EMAIL_PASS,
       },
       tls: {
-        // Detta löser felet "self-signed certificate" på din lokala dator
         rejectUnauthorized: false
       }
     });
@@ -47,36 +46,31 @@ async function startServer() {
 
     try {
       if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        console.warn("E-postuppgifter saknas i .env-filen.");
-        return res.status(500).json({ error: "Servern är inte korrekt konfigurerad (saknar .env)." });
+        console.warn("E-postuppgifter saknas!");
+        return res.status(500).json({ error: "E-post är inte konfigurerad på servern." });
       }
 
       await transporter.sendMail(mailOptions);
-      console.log("Email skickat utan problem!");
       res.json({ success: true, message: "Meddelandet har skickats!" });
     } catch (error) {
       console.error("Error sending email:", error);
-      res.status(500).json({ error: "Kunde inte skicka meddelandet. Kontrollera ditt app-lösenord." });
+      res.status(500).json({ error: "Kunde inte skicka meddelandet. Försök igen senare." });
     }
   });
 
-  // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
-    });
-  }
+  // Visa filer i huvudmappen (index.html, bilder osv.)
+  app.use(express.static(process.cwd()));
+  
+  // Visa src-mappen om dina script/bilder ligger där
+  app.use('/src', express.static(path.join(process.cwd(), 'src')));
+
+  // Fånga upp alla andra förfrågningar och skicka index.html
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "index.html"));
+  });
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
   });
 }
 
