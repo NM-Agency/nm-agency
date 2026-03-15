@@ -4,116 +4,145 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NM Agency</title>
-    <link rel="stylesheet" href="index.css">
     
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.2.0",
-        "react-dom": "https://esm.sh/react-dom@18.2.0",
-        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-        "motion/react": "https://esm.sh/motion/react",
-        "lucide-react": "https://esm.sh/lucide-react"
-      }
-    }
-    </script>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              brand: '#ff3e00', // Justera denna till din exakta orange/brand färg
+              brand: '#ff3e00',
             }
           }
         }
       }
     </script>
+
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom": "https://esm.sh/react-dom@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "motion/react": "https://esm.sh/framer-motion@11.0.0",
+        "lucide-react": "https://esm.sh/lucide-react@0.344.0"
+      }
+    }
+    </script>
+    
     <style>
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-        .btn-primary { @apply px-8 py-4 rounded-full bg-brand text-white font-bold flex items-center gap-2 hover:bg-opacity-90 transition-all; }
+        body { background-color: #09090b; margin: 0; color: white; font-family: sans-serif; }
+        .glass { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
     </style>
 </head>
-<body class="bg-zinc-950 text-white">
+<body>
     <div id="root"></div>
 
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <script type="text/babel" data-presets="typescript,react" data-type="module">
-        // Vi klistrar in din kod här men anpassar importerna något för webbläsaren
         import React, { useState, useEffect } from 'react';
         import ReactDOM from 'react-dom/client';
         import { motion, AnimatePresence } from 'motion/react';
         import { 
-          ArrowRight, BarChart3, Camera, CheckCircle2, Globe, Instagram, Mail, 
-          Menu, MessageSquare, Rocket, Smartphone, Target, X, Facebook, 
-          ChevronRight, ChevronDown 
+          ArrowRight, Instagram, Mail, Menu, Smartphone, X, Facebook, ChevronDown 
         } from 'lucide-react';
 
-        // --- DIN KOD STARTAR HÄR ---
+        // --- LOGO KOMPONENT ---
         const Logo = ({ className = "w-6 h-6" }) => (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
             <path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0a2 2 0 0 1 2 2v1H2v-1a2 2 0 0 1 2-2" />
-            <path d="M7 17h10" />
-            <path d="M6 13l4-4 4 3 6-6" />
-            <circle cx="6" cy="13" r="1" fill="currentColor" />
-            <circle cx="10" cy="9" r="1" fill="currentColor" />
-            <circle cx="14" cy="12" r="1" fill="currentColor" />
+            <path d="M7 17h10" /><path d="M6 13l4-4 4 3 6-6" />
+            <circle cx="6" cy="13" r="1" fill="currentColor" /><circle cx="10" cy="9" r="1" fill="currentColor" /><circle cx="14" cy="12" r="1" fill="currentColor" />
             <path d="M17 3h3v3" />
           </svg>
         );
 
-        // ... (Jag inkluderar resten av dina komponenter här i den slutgiltiga filen) ...
-        // Här lägger vi in din Navbar, Hero, Services, About, Contact och Footer exakt som du skrev dem
-
+        // --- NAVBAR ---
         const Navbar = () => {
           const [isScrolled, setIsScrolled] = useState(false);
           const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+          
           useEffect(() => {
             const handleScroll = () => setIsScrolled(window.scrollY > 20);
             window.addEventListener('scroll', handleScroll);
             return () => window.removeEventListener('scroll', handleScroll);
           }, []);
-          const navLinks = [{ name: 'Tjänster', href: '#tjanster' }, { name: 'Om oss', href: '#om' }, { name: 'Kontakt', href: '#kontakt' }];
+
           return (
-            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass py-4 shadow-sm' : 'bg-transparent py-6'}`}>
+            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass py-4 shadow-lg' : 'bg-transparent py-6'}`}>
               <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Logo className="text-brand w-8 h-8" />
                   <span className="text-xl font-bold tracking-tight text-white">NM <span className="text-brand">Agency</span></span>
                 </div>
                 <div className="hidden md:flex items-center gap-8">
-                  {navLinks.map((link) => (<a key={link.name} href={link.href} className="text-sm font-medium hover:text-brand transition-colors text-white">{link.name}</a>))}
-                  <a href="#kontakt" className="text-sm font-bold hover:text-brand transition-all text-white">Boka möte</a>
+                  <a href="#tjanster" className="text-sm font-medium hover:text-brand transition-colors text-white">Tjänster</a>
+                  <a href="#om" className="text-sm font-medium hover:text-brand transition-colors text-white">Om oss</a>
+                  <a href="#kontakt" className="text-sm font-bold bg-brand px-6 py-2 rounded-full hover:bg-opacity-80 transition-all text-white">Boka möte</a>
                 </div>
-                <button className="md:hidden text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>{isMobileMenuOpen ? <X /> : <Menu />}</button>
+                <button className="md:hidden text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                  {isMobileMenuOpen ? <X /> : <Menu />}
+                </button>
               </div>
             </nav>
           );
         };
 
+        // --- HERO SECTION ---
         const Hero = () => (
-          <section className="relative pt-48 pb-20 flex flex-col items-center text-center px-6">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-              <h1 className="text-6xl md:text-8xl font-bold mb-8 text-white">Vi bygger <span className="text-brand italic">framtidens</span> varumärken.</h1>
-              <p className="text-xl text-zinc-300 mb-10 max-w-2xl mx-auto">NM Agency hjälper ambitiösa företag att dominera sin nisch.</p>
-              <div className="flex gap-4 justify-center">
-                <a href="#kontakt" class="bg-brand px-8 py-4 rounded-full font-bold flex items-center gap-2 text-white">Starta ditt projekt <ArrowRight /></a>
+          <section className="relative pt-48 pb-20 px-6">
+            <div className="max-w-5xl mx-auto text-center">
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }} 
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-6xl md:text-8xl font-bold mb-8 text-white leading-tight"
+              >
+                Vi bygger <span className="text-brand italic">framtidens</span> varumärken.
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="text-xl text-zinc-400 mb-10 max-w-2xl mx-auto"
+              >
+                NM Agency hjälper ambitiösa företag att dominera sin nisch genom datadriven strategi och kreativt innehåll.
+              </motion.p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#kontakt" className="bg-brand text-white px-10 py-4 rounded-full font-bold text-lg hover:scale-105 transition flex items-center justify-center gap-2">
+                  Starta ditt projekt <ArrowRight className="w-5 h-5" />
+                </a>
               </div>
-            </motion.div>
+            </div>
           </section>
         );
 
-        // (Kortad ner för chatten, men du klistrar in ALLA dina komponenter här)
-        
+        // --- MAIN APP ---
         function App() {
           return (
-            <div className="min-h-screen bg-zinc-950">
+            <div className="min-h-screen bg-zinc-950 text-white">
               <Navbar />
-              <Hero />
-              {/* Lägg till de andra här på samma sätt */}
-              <section id="kontakt" className="py-20 text-center"><h2 class="text-brand text-4xl">Kontakt: agencymarketingnm@gmail.com</h2></section>
+              <main>
+                <Hero />
+                <section id="tjanster" className="py-32 px-6 text-center border-t border-zinc-900">
+                  <h2 className="text-4xl font-bold text-brand mb-6">Våra Tjänster</h2>
+                  <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <div className="p-8 bg-zinc-900/50 rounded-3xl border border-zinc-800 hover:border-brand/50 transition-all">
+                      <h3 className="text-2xl font-bold mb-4">Facebook Annonsering</h3>
+                      <p className="text-zinc-400">Högkonverterande kampanjer som driver riktiga resultat.</p>
+                    </div>
+                    <div className="p-8 bg-zinc-900/50 rounded-3xl border border-zinc-800 hover:border-brand/50 transition-all">
+                      <h3 className="text-2xl font-bold mb-4">Instagram Annonsering</h3>
+                      <p className="text-zinc-400">Varumärkesbyggande och visuell marknadsföring i världsklass.</p>
+                    </div>
+                  </div>
+                </section>
+              </main>
+              
+              <footer className="py-20 border-t border-zinc-900 text-center">
+                 <p className="text-zinc-500">© 2026 NM Agency AB. agencymarketingnm@gmail.com</p>
+              </footer>
             </div>
           );
         }
