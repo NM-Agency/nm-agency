@@ -21,6 +21,22 @@
 
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <script type="text/babel" data-presets="typescript,react" data-type="module" src="main.tsx"></script>
+    <script type="text/babel" data-presets="typescript,react" data-type="module">
+        import React from 'react';
+        import ReactDOM from 'react-dom/client';
+        
+        // Här hämtar vi din App-komponent från App.tsx filen automatiskt
+        import App from './App.tsx';
+
+        // Detta är vad som vanligtvis står i main.tsx:
+        const rootElement = document.getElementById('root');
+        if (rootElement) {
+          ReactDOM.createRoot(rootElement).render(
+            <React.StrictMode>
+              <App />
+            </React.StrictMode>
+          );
+        }
+    </script>
 </body>
 </html>
